@@ -15,21 +15,31 @@ namespace Repositorio
                     ConnectionStrings["LigaNatacion"].ConnectionString))
             {
                 conexion.Open();
-                SqlCommand comando = new SqlCommand();
-                comando.CommandType = CommandType.StoredProcedure;
-                comando.Connection = conexion;
+                SqlTransaction tran = conexion.BeginTransaction();
+                try
+                {
+                    SqlCommand comando = new SqlCommand();
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Connection = conexion;
+                    comando.Transaction = tran;
+                    comando.CommandText = "IngresarDeportista";
+                    comando.Parameters.Add("@PrimerNombre", SqlDbType.VarChar).Value = deportista.PrimerNombre;
+                    comando.Parameters.Add("@SegundoNombre", SqlDbType.VarChar).Value = deportista.SegundoNombre;
+                    comando.Parameters.Add("@PrimerApellido", SqlDbType.VarChar).Value = deportista.PrimerApellido;
+                    comando.Parameters.Add("@SegundoApellido", SqlDbType.VarChar).Value = deportista.SegundoApellido;
+                    comando.Parameters.Add("@Documento", SqlDbType.BigInt).Value = deportista.NumeroDocumento;
+                    comando.Parameters.Add("@FechaNacimiento", SqlDbType.DateTime).Value = deportista.FechaNacimiento;
+                    comando.Parameters.Add("@IdSexo", SqlDbType.SmallInt).Value = deportista.Sexo.Id;
+                    comando.Parameters.Add("@IdTipoDocumento", SqlDbType.SmallInt).Value = deportista.TipoDocumento.Id;
 
-                comando.CommandText = "IngresarDeportista";
-                comando.Parameters.Add("@PrimerNombre", SqlDbType.VarChar).Value = deportista.PrimerNombre;
-                comando.Parameters.Add("@SegundoNombre", SqlDbType.VarChar).Value = deportista.SegundoNombre;
-                comando.Parameters.Add("@PrimerApellido", SqlDbType.VarChar).Value = deportista.PrimerApellido;
-                comando.Parameters.Add("@SegundoApellido", SqlDbType.VarChar).Value = deportista.SegundoApellido;
-                comando.Parameters.Add("@Documento", SqlDbType.BigInt).Value = deportista.NumeroDocumento;
-                comando.Parameters.Add("@FechaNacimiento", SqlDbType.DateTime).Value = deportista.FechaNacimiento;
-                comando.Parameters.Add("@IdSexo", SqlDbType.SmallInt).Value = deportista.Sexo.Id;
-                comando.Parameters.Add("@IdTipoDocumento", SqlDbType.SmallInt).Value = deportista.TipoDocumento.Id;
-
-                comando.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();
+                    tran.Commit();
+                }
+                catch
+                {
+                    tran.Rollback();
+                    throw;
+                }
             }
         }
 
@@ -70,6 +80,30 @@ namespace Repositorio
                     }
                 }
             }
+            return deportistas;
+        }
+
+        public DataTable ObtenerDeportistas()
+        {
+            DataTable deportistas = new DataTable();
+            using (SqlConnection conexion = new SqlConnection(ConfigurationManager.ConnectionStrings["LigaNatacion"].ConnectionString))
+            {
+                conexion.Open();
+                SqlCommand comando = new SqlCommand();
+                comando.CommandType = CommandType.StoredProcedure;
+                comando.Connection = conexion;
+                comando.CommandText = "ConsultarDeportistas";
+
+                comando.Parameters.Add("@PrimerNombre", SqlDbType.VarChar).Value = string.Empty;
+                comando.Parameters.Add("@SegundoNombre", SqlDbType.VarChar).Value = string.Empty;
+                comando.Parameters.Add("@PrimerApellido", SqlDbType.VarChar).Value = string.Empty;
+                comando.Parameters.Add("@SegundoApellido", SqlDbType.VarChar).Value = string.Empty;
+                comando.Parameters.Add("@Documento", SqlDbType.BigInt).Value = string.Empty;
+
+                SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+                adaptador.Fill(deportistas);
+            }
+
             return deportistas;
         }
     }

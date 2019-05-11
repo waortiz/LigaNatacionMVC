@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Data;
 
 namespace Repositorio
 {
@@ -32,6 +33,35 @@ namespace Repositorio
             (primerApellido == "" || p.PrimerApellido.Contains(primerApellido)) &&
             (segundoApellido == "" || p.SegundoApellido.Contains(segundoApellido))
             ).ToList();
+        }
+
+        public DataTable ObtenerDeportistas()
+        {
+            List<Deportista> listado = new List<Deportista>();
+            var table = new DataTable();
+
+            table.Columns.Add("PrimerNombre", typeof(string));
+            table.Columns.Add("SegundoNombre", typeof(string));
+            table.Columns.Add("PrimerApellido", typeof(string));
+            table.Columns.Add("SegundoApellido", typeof(string));
+            table.Columns.Add("NumeroDocumento", typeof(string));
+            table.Columns.Add("FechaNacimiento", typeof(DateTime));
+
+            foreach (var deportista in deportistas)
+            {
+                var row = table.NewRow();
+
+                row["PrimerNombre"] = deportista.PrimerNombre;
+                row["SegundoNombre"] = deportista.SegundoNombre;
+                row["PrimerApellido"] = deportista.PrimerApellido;
+                row["SegundoApellido"] = deportista.SegundoApellido;
+                row["NumeroDocumento"] = deportista.SegundoApellido;
+                row["FechaNacimiento"] = deportista.FechaNacimiento;
+
+                table.Rows.Add(row);
+            }
+
+            return table;
         }
     }
 }

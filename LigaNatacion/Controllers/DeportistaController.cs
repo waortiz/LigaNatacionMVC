@@ -68,8 +68,16 @@ namespace LigaNatacion.Controllers
                     Id  = int.Parse(deportista.TipoDocumento)
                 }
             };
-            deportistaNegocio.IngresarDeportista(nuevoDeportista);
-
+            try
+            {
+                deportistaNegocio.IngresarDeportista(nuevoDeportista);
+                ViewBag.Mensaje = "Se ingresó el deportista";
+            }
+            catch(Exception exc)
+            {
+                ViewBag.Mensaje = "No se pudo ingresar el deportista";
+                //Log.Error(exc);
+            }
             return View();
         }
     }

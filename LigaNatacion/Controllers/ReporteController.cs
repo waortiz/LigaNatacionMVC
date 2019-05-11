@@ -45,5 +45,10 @@ namespace LigaNatacion.Controllers
             ViewBag.DatosGrafico = datosGrafico;
             return View();
         }
+
+        public ActionResult ReporteDeportistas()
+        {
+            return View();
+        }
     }
 }
