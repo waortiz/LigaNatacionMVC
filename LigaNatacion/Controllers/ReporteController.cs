@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace LigaNatacion.Controllers
 {
+    [Authorize]
     public class ReporteController : Controller
     {
         //

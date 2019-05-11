@@ -8,10 +8,9 @@ using System.Web.Mvc;
 
 namespace LigaNatacion.Controllers
 {
+    [Authorize]
     public class DeportistaController : Controller
     {
-        
-
         public ActionResult Index()
         {
             return View();
